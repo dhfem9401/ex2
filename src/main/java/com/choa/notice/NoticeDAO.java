@@ -9,16 +9,17 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.choa.util.DBConnect;
 import com.choa.util.RowMaker;
 
 @Repository
-//noticeDAO noticeDAO = new NoticeDAO();
+//NoticeDAO noticDao = new NoticeDAO();
 public class NoticeDAO {
 	
-	@Inject
+	@Autowired
 	private DataSource dataSource;
 	
 		
@@ -112,10 +113,10 @@ public class NoticeDAO {
 	//write
 	public int noticeWrite(NoticeDTO noticeDTO) throws Exception{
 		Connection con = dataSource.getConnection();
-		PreparedStatement st = null;
+		PreparedStatement st= null;
 		int result=0;
 		
-		String sql = "insert into notice values(notice_seq.nextval,?,?,?,sysdate,0)";
+		String sql="insert into notice values(point_seq.nextval,?,?,?,sysdate,0)";
 		st = con.prepareStatement(sql);
 		st.setString(1, noticeDTO.getWriter());
 		st.setString(2, noticeDTO.getTitle());
@@ -123,39 +124,28 @@ public class NoticeDAO {
 		result = st.executeUpdate();
 		
 		DBConnect.disConnect(st, con);
-		
 		return result;
 	}
 	//update
 	public int noticeUpdate(NoticeDTO noticeDTO) throws Exception{
 		Connection con = dataSource.getConnection();
-		PreparedStatement st = null;	
+		PreparedStatement st= null;
 		int result=0;
 		
-		String sql =" update notice set title=?,contents=? where num = ?";
-		st = con.prepareStatement(sql);		
+		String sql="update notice set title=?, contents=? where num=?";
+		st = con.prepareStatement(sql);
 		st.setString(1, noticeDTO.getTitle());
 		st.setString(2, noticeDTO.getContents());
 		st.setInt(3, noticeDTO.getNum());
 		result = st.executeUpdate();
 		
 		DBConnect.disConnect(st, con);
-		
 		return result;
 	}
 	
 	//delete
-	public int noticeDelete(int num) throws Exception{
-		Connection con = dataSource.getConnection();
-		PreparedStatement st = null;
+	public int noticeDelete(int num){
 		int result=0;
-
-		String sql = "delete notice where num =?";
-		st = con.prepareStatement(sql);
-		st.setInt(1, num);
-		result = st.executeUpdate();
-		
-		DBConnect.disConnect(st, con);
 		
 		return result;
 	}

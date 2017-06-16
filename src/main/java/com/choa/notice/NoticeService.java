@@ -2,8 +2,12 @@ package com.choa.notice;
 
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.inject.Inject;
+import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.choa.util.PageMaker;
@@ -12,8 +16,14 @@ import com.choa.util.PageMaker;
 //NoticeService noticeService = new NoticeService();
 public class NoticeService {
 	
-	@Inject
+	
+	
+	@Autowired
 	private NoticeDAO noticeDAO;
+	
+	public void test(){
+		System.out.println(noticeDAO);
+	}
 	
 	/*//Constructor
 	public NoticeService(NoticeDAO noticeDAO) {
@@ -28,6 +38,8 @@ public class NoticeService {
 	
 	//view
 	public NoticeDTO noticeView(int num) throws Exception{
+		
+		
 		return noticeDAO.noticeView(num);
 	}
 	
@@ -52,7 +64,7 @@ public class NoticeService {
 	}
 	
 	//delete
-	public int noticeDelete(int num)throws Exception{
+	public int noticeDelete(int num){
 		return noticeDAO.noticeDelete(num);
 	}
 	

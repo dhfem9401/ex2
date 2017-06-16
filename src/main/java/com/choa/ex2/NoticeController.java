@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,8 +19,14 @@ import com.choa.notice.NoticeService;
 @RequestMapping(value="/notice/**")
 public class NoticeController {
 
-	@Inject//type
+	@Autowired
 	private NoticeService noticeService;
+	
+	@RequestMapping(value="test")
+	public void test(){
+		System.out.println(noticeService);
+		noticeService.test();
+	}
 	
 	//list
 	@RequestMapping(value="noticeList", method=RequestMethod.GET)
@@ -37,12 +44,14 @@ public class NoticeController {
 	
 	//writeForm
 	@RequestMapping(value="noticeWrite", method=RequestMethod.GET)
-	public void noticeWrite(){}
+	public void noticeWrite(Model model){
+		model.addAttribute("path", "Write");
 		
+	}
 	
 	//write 
 	@RequestMapping(value="noticeWrite", method=RequestMethod.POST)
-	public String noticeWrite(NoticeDTO noticeDTO, RedirectAttributes rd) throws Exception{
+	public String noticeWrite(NoticeDTO noticeDTO, RedirectAttributes rd)throws Exception{
 		int result=noticeService.noticeWrite(noticeDTO);
 		String message = "FAIL";
 		if(result>0){
@@ -54,8 +63,16 @@ public class NoticeController {
 	
 	//update
 	@RequestMapping(value="noticeUpdate", method=RequestMethod.GET)
-	public String noticeUpdate(NoticeDTO noticeDTO, RedirectAttributes rd)throws Exception{
-		int result=noticeService.noticeWrite(noticeDTO);
+	public String noticeUpdate(Integer num, Model model) throws Exception{
+		NoticeDTO noticeDTO = noticeService.noticeView(num);
+		model.addAttribute("dto", noticeDTO);
+		model.addAttribute("path", "Update");
+		return "notice/noticeWrite";
+	}
+	
+	@RequestMapping(value="noticeUpdate", method=RequestMethod.POST)
+	public String noticeUpdate(NoticeDTO noticeDTO, RedirectAttributes rd) throws Exception{
+		int result = noticeService.noticeUpdate(noticeDTO);
 		String message = "FAIL";
 		if(result>0){
 			message="SUCCESS";
@@ -64,21 +81,9 @@ public class NoticeController {
 		return "redirect:noticeList?curPage=1";
 	}
 	
-	@RequestMapping(value="noticeUpdate", method=RequestMethod.POST)
-	public void noticeUpdate2(NoticeDTO noticeDTO){
-		
-	}
-	//delete
 	@RequestMapping(value="noticeDelete", method=RequestMethod.GET)
-	public String noticeDelete(Integer num, RedirectAttributes rd)throws Exception{
+	public void noticeDelete(Integer num){
 		int result = noticeService.noticeDelete(num);
-		String message = "FAIL";
-		if(result>0){
-			message="SUCCESS";
-		}
-		rd.addFlashAttribute("message", message);
-		return "redirect:noticeList";
-		
 	}
 	
 	
